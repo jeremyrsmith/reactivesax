@@ -53,42 +53,56 @@ import scala.xml._
 trait SAXTest { self: MockFactory =>
 
   implicit class ContentHandlerMock(val handler: ContentHandler) {
-    def expectsXML(doc: Node) = {
 
-      def recurse(el: Node, f1: PartialFunction[Node, Unit], f2: (Elem) => Unit): Unit = {
-        if(f1.isDefinedAt(el))
-          f1(el)
-        else {
-          println(s"SAX Test issue: does not define a case for $el")
-        }
-        el.child.foreach {
-          case e: Elem =>
-            recurse(e, f1, f2)
-          case node =>
-            recurse(node, f1, f2)
-        }
-        el match {
-          case e: Elem => f2(e)
-          case _ =>
-        }
+    def recurse(el: Node, f1: PartialFunction[Node, Unit], f2: (Elem) => Unit): Unit = {
+      if(f1.isDefinedAt(el))
+        f1(el)
+      else {
+        println(s"SAX Test issue: does not define a case for $el")
       }
+      el.child.foreach {
+        case e: Elem =>
+          recurse(e, f1, f2)
+        case node =>
+          recurse(node, f1, f2)
+      }
+      el match {
+        case e: Elem => f2(e)
+        case _ =>
+      }
+    }
+
+    val nodeHandler: PartialFunction[Node, Unit] = {
+      case el: Elem =>
+        handler.startElement _ expects anElement(el.label, el.attributes.asAttrMap.toSet: Set[(String, String)])
+      case Text(str) if str.trim() != "" =>
+        handler.characters _ expects aTextNode(str)
+      case Text(str) =>
+        (handler.characters _).expects(aTextNode("")).noMoreThanOnce()
+      case PCData(str) =>
+        (handler.characters _).expects(aTextNode(str))
+      case Comment(text) =>
+      case ProcInstr(target, text) =>
+        (handler.processingInstruction _).expects(target, text)
+    }
+
+    def expectsXML(doc: Node) = inSequence {
+        (handler.startDocument _).expects()
+        recurse(doc, nodeHandler, { el =>
+          handler.endElement _ expects elementEnd(el.label)
+        })
+
+        (handler.endDocument _).expects()
+    }
+
+    def expectsXML(doc: NodeSeq) = {
 
       inSequence {
         (handler.startDocument _).expects()
-        recurse(doc, {
-          case el: Elem =>
-            handler.startElement _ expects anElement(el.label, el.attributes.asAttrMap.toSet: Set[(String, String)])
-          case Text(str) if str.trim() != "" =>
-            handler.characters _ expects aTextNode(str)
-          case Text(str) =>
-            (handler.characters _).expects(aTextNode("")).noMoreThanOnce()
-          case PCData(str) =>
-            (handler.characters _).expects(aTextNode(str))
-          case Comment(text) =>
-
-        }, { el =>
-          handler.endElement _ expects elementEnd(el.label)
-        })
+        doc foreach { node => recurse(node, nodeHandler , { el =>
+            handler.endElement _ expects elementEnd(el.label)
+          })
+        }
         (handler.endDocument _).expects()
       }
     }

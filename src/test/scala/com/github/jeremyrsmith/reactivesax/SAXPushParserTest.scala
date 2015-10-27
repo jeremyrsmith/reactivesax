@@ -47,7 +47,7 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FeatureSpec, Matchers, FlatSpec}
 import org.xml.sax.{Attributes, Locator, ContentHandler}
 import scala.language.dynamics
-import scala.xml.Node
+import scala.xml.{NodeSeq, NodeBuffer, Node}
 
 class SAXPushParserTest extends FeatureSpec with MockFactory with SAXTest {
 
@@ -120,12 +120,40 @@ class SAXPushParserTest extends FeatureSpec with MockFactory with SAXTest {
       val doc = <document><!-- This is an XML comment --></document>
       doTest(doc)
     }
-    
+
+  }
+
+  feature("Handles processing instructions") {
+
+    scenario("Named processing instruction") {
+      val doc = <?instruction?><document>Hello</document>
+      doTest(doc)
+    }
+
+    scenario("Named processing instruction with data") {
+      val doc = <?instsruction blah?><document>Hello</document>
+    }
+
   }
 
 
+  def doTest(nodes: NodeBuffer) = {
+    val handler = mock[ContentHandler]
+    //TODO: Don't ignore these
+    (handler.startPrefixMapping _) expects(*,*) anyNumberOfTimes()
+    (handler.endPrefixMapping _) expects(*) anyNumberOfTimes()
+    val doc = NodeSeq.fromSeq(nodes)
+    handler expectsXML doc
+    val parser = SAXPushParser(handler)
+    parser.open()
+    parser.write(doc.toString())
+    parser.close()
+  }
+
   def doTest(doc: Node) = {
     val handler = mock[ContentHandler]
+    (handler.startPrefixMapping _) expects(*,*) anyNumberOfTimes()
+    (handler.endPrefixMapping _) expects(*) anyNumberOfTimes()
     handler expectsXML doc
     val parser = SAXPushParser(handler)
     parser.open()

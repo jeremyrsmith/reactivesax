@@ -105,6 +105,7 @@ class XmlFsm(receiver: ContentHandler, bufferSize: Int = 8192) {
     case Some("xmlns") =>
       val top = namespaces.pop()
       namespaces.push(top.copy(_1 = top._1 ++ Map(name -> value)))
+      receiver.startPrefixMapping(name, value)
     case _ =>
   }
 
@@ -137,6 +138,9 @@ class XmlFsm(receiver: ContentHandler, bufferSize: Int = 8192) {
       case (map, count) if count > 0 =>
         namespaces.push((map, count - 1))
       case (map, count) =>
+        map foreach {
+          case (mappedPrefix, mappedUri) => receiver.endPrefixMapping(mappedPrefix)
+        }
     }
   }
 
@@ -146,7 +150,7 @@ class XmlFsm(receiver: ContentHandler, bufferSize: Int = 8192) {
   }
 
   private def directive(target: String, data: Option[String]) = {
-    //TODO
+    receiver.processingInstruction(target, data.getOrElse(""))
   }
 
   private def declaration(unparsed: String) = {
