@@ -94,6 +94,26 @@ class SAXPushParserTest extends FeatureSpec with MockFactory with SAXTest {
 
   }
 
+  feature("Handles CDATA Sections") {
+
+    scenario("Straightforward CDATA Section") {
+      doTest(<document><![CDATA[This is some character data.]]></document>)
+    }
+
+    scenario("CDATA section with a closing square bracket in the character data") {
+      doTest(<document><![CDATA[This is some character data that contains a ] in the middle.]]></document>)
+    }
+
+    scenario("CDATA section with multiple closing square brackets in sequence") {
+      doTest(<document><![CDATA[This is some character data that contains multiple ]] in the middle.]]></document>)
+    }
+
+    scenario("CDATA section with many closing square brackets followed by actually closing the CDATA.") {
+      doTest(<document><![CDATA[This character data has a bunch of closing brackets at the end ]]]]]]></document>)
+    }
+
+  }
+
 
   def doTest(doc: Node) = {
     val handler = mock[ContentHandler]

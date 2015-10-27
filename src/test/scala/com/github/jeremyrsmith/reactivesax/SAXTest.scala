@@ -47,7 +47,7 @@ import org.scalamock.MockParameter
 import org.scalamock.scalatest.MockFactory
 import org.xml.sax.{Attributes, ContentHandler}
 
-import scala.xml.{Text, Node, Elem}
+import scala.xml.{Text, Node, Elem, PCData}
 
 
 trait SAXTest { self: MockFactory =>
@@ -58,6 +58,9 @@ trait SAXTest { self: MockFactory =>
       def recurse(el: Node, f1: PartialFunction[Node, Unit], f2: (Elem) => Unit): Unit = {
         if(f1.isDefinedAt(el))
           f1(el)
+        else {
+          println(s"SAX Test issue: does not define a case for $el")
+        }
         el.child.foreach {
           case e: Elem =>
             recurse(e, f1, f2)
@@ -79,6 +82,8 @@ trait SAXTest { self: MockFactory =>
             handler.characters _ expects aTextNode(str)
           case Text(str) =>
             (handler.characters _).expects(aTextNode("")).noMoreThanOnce()
+          case PCData(str) =>
+            (handler.characters _).expects(aTextNode(str))
         }, { el =>
           handler.endElement _ expects elementEnd(el.label)
         })
