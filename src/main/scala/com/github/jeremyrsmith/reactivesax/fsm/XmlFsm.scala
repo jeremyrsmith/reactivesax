@@ -219,9 +219,30 @@ class XmlFsm(receiver: ContentHandler, bufferSize: Int = 8192) {
   case object InstructionOpen extends State {
     def next = {
       case '[' => CDATAExpected
+      case '-' => CommentExpected
       case c =>
         buffer.put(c)
         Declaration
+    }
+  }
+  case object CommentExpected extends State {
+    def next = {
+      case '-' => Comment
+      case c => throw new Exception(s"Syntax error - expected <!-- to open comment, found <!-$c")
+    }
+  }
+  case object Comment extends State {
+    def next = {
+      case '-' => CommentMaybeClosing(false)
+      case c => this //consume and ignore
+    }
+  }
+  case class CommentMaybeClosing(secondDash: Boolean = false) extends State {
+    def next = {
+      case '-' if secondDash => this
+      case '-' => copy(secondDash = true)
+      case '>' if secondDash => Root
+      case c => Comment
     }
   }
   case object CDATAExpected extends State {

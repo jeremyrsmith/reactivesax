@@ -114,6 +114,15 @@ class SAXPushParserTest extends FeatureSpec with MockFactory with SAXTest {
 
   }
 
+  feature("Handles XML comments") {
+
+    scenario("Straightforward comment") {
+      val doc = <document><!-- This is an XML comment --></document>
+      doTest(doc)
+    }
+    
+  }
+
 
   def doTest(doc: Node) = {
     val handler = mock[ContentHandler]

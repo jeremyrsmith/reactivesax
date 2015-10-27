@@ -47,7 +47,7 @@ import org.scalamock.MockParameter
 import org.scalamock.scalatest.MockFactory
 import org.xml.sax.{Attributes, ContentHandler}
 
-import scala.xml.{Text, Node, Elem, PCData}
+import scala.xml._
 
 
 trait SAXTest { self: MockFactory =>
@@ -84,6 +84,8 @@ trait SAXTest { self: MockFactory =>
             (handler.characters _).expects(aTextNode("")).noMoreThanOnce()
           case PCData(str) =>
             (handler.characters _).expects(aTextNode(str))
+          case Comment(text) =>
+
         }, { el =>
           handler.endElement _ expects elementEnd(el.label)
         })
