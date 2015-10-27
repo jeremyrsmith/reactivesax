@@ -95,20 +95,20 @@ some questions that you might be having if you're reading this README.
 
   *A*: Currently, I'm licensing this under [Creative Commons BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
        
-      [CC BY-SA 4.0 Badge](https://licensebuttons.net/l/by-sa/3.0/88x31.png)
+   [CC BY-SA 4.0 Badge](https://licensebuttons.net/l/by-sa/3.0/88x31.png)
        
-      What this means (or, what I intend it to mean) is that you can use this library for whatever you want, and I will
-      be glad that you found it useful.  But, selfishly, if you improve the library, I want you to contribute back your
-      changes in the form of a pull request.  Also, if you use this library, and publish your modified version, I want
-      you to link back to the original and make it clear that you've modified it and what your changes are.  It's not
-      because I want any credit; it's just because I don't want anyone to get confused.
+   What this means (or, what I intend it to mean) is that you can use this library for whatever you want, and I will
+   be glad that you found it useful.  But, selfishly, if you improve the library, I want you to contribute back your
+   changes in the form of a pull request.  Also, if you use this library, and publish your modified version, I want
+   you to link back to the original and make it clear that you've modified it and what your changes are.  It's not
+   because I want any credit; it's just because I don't want anyone to get confused.
        
-      CC has no license for this specifically, but I don't care about attribution if you just use this library in your
-      project (commercial or not).  You don't have to provide any attribution in that case, as far as I'm concerned.
-      But if you modify the library, I want your improvements.  Deal?
+   CC has no license for this specifically, but I don't care about attribution if you just use this library in your
+   project (commercial or not).  You don't have to provide any attribution in that case, as far as I'm concerned.
+   But if you modify the library, I want your improvements.  Deal?
        
-      I've also added a clause about how I'm not providing any warranty, and if anything bad happens it's not my
-      responsibility.  You can't be too careful these days.
+   I've also added a clause about how I'm not providing any warranty, and if anything bad happens it's not my
+   responsibility.  You can't be too careful these days.
        
 4. Maven?
 
