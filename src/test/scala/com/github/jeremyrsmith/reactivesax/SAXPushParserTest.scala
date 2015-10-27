@@ -94,6 +94,16 @@ class SAXPushParserTest extends FeatureSpec with MockFactory with SAXTest {
 
   }
 
+  feature("Handles self-closing tags") {
+    scenario("Self-closing tag with space") {
+      doTest(<document><self-closing /></document>)
+    }
+
+    scenario("Self-closing tag with attributes and space") {
+      doTest(<document><self-closing a="foo" /></document>)
+    }
+  }
+
   feature("Handles CDATA Sections") {
 
     scenario("Straightforward CDATA Section") {

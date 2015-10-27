@@ -310,6 +310,8 @@ class XmlFsm(receiver: ContentHandler, bufferSize: Int = 8192) {
       case '>' =>
         elementStart(prefix, name, attributes)
         Root
+      case '/' =>
+        TagSelfCloseStarted(this)
       case c =>
         buffer.put(c)
         AttributeOpen(this)
