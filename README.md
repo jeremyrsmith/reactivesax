@@ -95,7 +95,7 @@ some questions that you might be having if you're reading this README.
 
   *A*: Currently, I'm licensing this under [Creative Commons BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
        
-   [CC BY-SA 4.0 Badge](https://licensebuttons.net/l/by-sa/3.0/88x31.png)
+   ![CC BY-SA 4.0 Badge](https://licensebuttons.net/l/by-sa/3.0/88x31.png)
        
    What this means (or, what I intend it to mean) is that you can use this library for whatever you want, and I will
    be glad that you found it useful.  But, selfishly, if you improve the library, I want you to contribute back your
