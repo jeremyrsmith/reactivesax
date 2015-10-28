@@ -95,7 +95,7 @@ class XmlFsm(receiver: ContentHandler, bufferSize: Int = 8192) {
   }
 
   private val defaultUri = new mutable.Stack[(String, Int)]
-  defaultUri.push(("", 0))
+  defaultUri.push((null, 0))
   private val namespaces = new mutable.Stack[(Map[String, String], Int)]
   namespaces.push(Map.empty[String, String] -> 0)
 
@@ -114,30 +114,35 @@ class XmlFsm(receiver: ContentHandler, bufferSize: Int = 8192) {
     found flatMap (_._1.get(prefix))
   }
 
-  private def elementStart(prefix: Option[String], name: String, attributes: Set[Attribute]): Unit = {
+  private def namespaced(prefix: Option[String], name: String) = {
     val uri = prefix flatMap findUriForPrefix orElse defaultUri.headOption.map(_._1)
     uri match {
-      case None => receiver.startElement("", "", name, attributes)
-      case Some("") => receiver.startElement("", "", name, attributes)
+      case None => (null, name, name)
+      case Some(null) => (null, name, name)
       case Some(u) => prefix match {
-        case Some(pre) => receiver.startElement(u, name, s"$pre:$name", attributes)
-        case None => receiver.startElement(u, name, name, attributes)
+        case Some(pre) => (u, name, s"$pre:$name")
+        case None => (u, name, name)
       }
     }
+  }
+
+  private def elementStart(prefix: Option[String], name: String, attributes: Set[Attribute]): Unit = {
+
     attributes.find(_.prefix == "xmlns") match {
       case Some(_) => namespaces.push((Map(), 0))
       case None =>
         val top = namespaces.pop()
         namespaces.push(top.copy(_2 = top._2 + 1))
     }
+
+    val (uri, localName, qName) = namespaced(prefix, name)
+    receiver.startElement(uri, localName, qName, attributes)
+
   }
 
   private def elementEnd(prefix: Option[String], name: String): Unit = {
-    val uri = prefix flatMap findUriForPrefix
-    uri match {
-      case None => receiver.endElement("", "", name)
-      case Some(u) => receiver.endElement(u, name, s"$u:$name")
-    }
+    val (uri, localName, qName) = namespaced(prefix, name)
+    receiver.endElement(uri, localName, qName)
     namespaces.pop() match {
       case (map, count) if count > 0 =>
         namespaces.push((map, count - 1))
@@ -376,7 +381,9 @@ class XmlFsm(receiver: ContentHandler, bufferSize: Int = 8192) {
   case class EncapsedAttributeValue(tag: OpenTag, prefix: Option[String], name: String) extends State {
     def next = {
       case '"' =>
-        tag.copy(attributes = tag.attributes + Attribute(prefix, name, consumeBuffer()))
+        val attributeValue = consumeBuffer()
+        processAttributeForNamespaces(prefix, name, attributeValue)
+        tag.copy(attributes = tag.attributes + Attribute(prefix, name, attributeValue))
     }
   }
   case class TagSelfCloseStarted(tag: OpenTag) extends State {

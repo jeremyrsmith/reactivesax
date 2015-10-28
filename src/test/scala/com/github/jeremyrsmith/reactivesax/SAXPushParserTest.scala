@@ -92,6 +92,11 @@ class SAXPushParserTest extends FeatureSpec with MockFactory with SAXTest {
       doTest(doc)
     }
 
+    scenario("XML Document with namespace prefix on same element that defines the prefix") {
+      val doc = <foo:document xmlns:foo="http://foo.com/namespace"><element>Text</element><foo:element>Text</foo:element></foo:document>
+      doTest(doc)
+    }
+
   }
 
   feature("Handles self-closing tags") {
