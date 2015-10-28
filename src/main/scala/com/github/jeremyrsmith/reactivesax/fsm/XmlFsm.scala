@@ -115,10 +115,14 @@ class XmlFsm(receiver: ContentHandler, bufferSize: Int = 8192) {
   }
 
   private def elementStart(prefix: Option[String], name: String, attributes: Set[Attribute]): Unit = {
-    val uri = prefix flatMap findUriForPrefix
+    val uri = prefix flatMap findUriForPrefix orElse defaultUri.headOption.map(_._1)
     uri match {
       case None => receiver.startElement("", "", name, attributes)
-      case Some(u) => receiver.startElement(u, name, s"$u:$name", attributes)
+      case Some("") => receiver.startElement("", "", name, attributes)
+      case Some(u) => prefix match {
+        case Some(pre) => receiver.startElement(u, name, s"$pre:$name", attributes)
+        case None => receiver.startElement(u, name, name, attributes)
+      }
     }
     attributes.find(_.prefix == "xmlns") match {
       case Some(_) => namespaces.push((Map(), 0))
