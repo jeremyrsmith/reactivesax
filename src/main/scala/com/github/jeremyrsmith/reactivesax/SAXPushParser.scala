@@ -79,7 +79,7 @@ class SAXPushParser[HandlerMutability <: IsHandlerMutable](implicit val m: Handl
   override def flush(): Unit = {} //not needed
 
   override def write(cbuf: Array[Char], off: Int, len: Int): Unit = {
-    off to off + len foreach {
+    off to off + len - 1 foreach {
       i => fsm.next(cbuf(i))
     }
   }
