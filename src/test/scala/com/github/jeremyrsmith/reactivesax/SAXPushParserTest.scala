@@ -76,7 +76,9 @@ class SAXPushParserTest extends FeatureSpec with MockFactory with SAXTest {
 
     scenario("XML Document with nested global namespaces") {
       val doc = <document xmlns="http://foo.com/namespace">
-        <element xmlns="http://bar.com/namespace">Foo</element>
+        <element>
+          <element xmlns="http://bar.com/namespace"><el>Foo</el></element>
+        </element>
         <element2 attr="foo">Bar</element2>
       </document>
 

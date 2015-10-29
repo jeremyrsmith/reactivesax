@@ -94,7 +94,7 @@ trait SAXTest { self: MockFactory =>
 
     override def equals(that: Any) = that match {
       case null => value == null
-      case something: A => Option(something) == Option(that)
+      case something: A => Option(something) == Option(value)
       case _ => false
     }
 

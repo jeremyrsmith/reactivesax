@@ -101,7 +101,7 @@ class XmlFsm(receiver: ContentHandler, bufferSize: Int = 8192) {
 
   private def processAttributeForNamespaces(prefix: Option[String], name: String, value: String): Unit = prefix match {
     case None if name == "xmlns" =>
-      defaultUri.push((value, 0))
+      defaultUri.push((value, -1))
     case Some("xmlns") =>
       val top = namespaces.pop()
       namespaces.push(top.copy(_1 = top._1 ++ Map(name -> value)))
