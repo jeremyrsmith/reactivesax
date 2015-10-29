@@ -167,7 +167,7 @@ class XmlFsm(receiver: ContentHandler, bufferSize: Int = 8192) {
   }
 
   def open() = receiver.startDocument()
-  def close() = if(buffer.length() > 0 && state != CharacterData && state != WhiteSpace) //character data could be one character of whitespace
+  def close() = if(buffer.position() > 0 && state != CharacterData && state != WhiteSpace) //character data could be one character of whitespace
     throw new Exception("Premature end of file; buffer is not empty, but writer was closed")
   else {
     //reset internal state
