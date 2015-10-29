@@ -135,6 +135,10 @@ class XmlFsm(receiver: ContentHandler, bufferSize: Int = 8192) {
         namespaces.push(top.copy(_2 = top._2 + 1))
     }
 
+    defaultUri.push(defaultUri.pop() match {
+      case (uri, count) => (uri, count + 1)
+    })
+
     val (uri, localName, qName) = namespaced(prefix, name)
     receiver.startElement(uri, localName, qName, attributes)
 
@@ -150,6 +154,11 @@ class XmlFsm(receiver: ContentHandler, bufferSize: Int = 8192) {
         map foreach {
           case (mappedPrefix, mappedUri) => receiver.endPrefixMapping(mappedPrefix)
         }
+    }
+
+    defaultUri.pop() match {
+      case (nsUri, 0) =>
+      case (nsUri, i) => defaultUri.push((nsUri, i - 1))
     }
   }
 
