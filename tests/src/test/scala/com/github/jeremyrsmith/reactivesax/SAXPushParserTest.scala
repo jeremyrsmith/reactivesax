@@ -43,11 +43,12 @@
 
 package com.github.jeremyrsmith.reactivesax
 
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FeatureSpec, Matchers, FlatSpec}
-import org.xml.sax.{Attributes, Locator, ContentHandler}
 import scala.language.dynamics
-import scala.xml.{NodeSeq, NodeBuffer, Node}
+import scala.xml.{Node, NodeBuffer, NodeSeq}
+
+import org.scalamock.scalatest.MockFactory
+import org.scalatest.FeatureSpec
+import org.xml.sax.ContentHandler
 
 class SAXPushParserTest extends FeatureSpec with MockFactory with SAXTest {
 

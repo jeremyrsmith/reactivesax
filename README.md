@@ -73,7 +73,12 @@ sax.write("<xml></xml>")
 Internally, this creates an identity `XMLFilter` and that it passes SAX events to, and `setContentHandler` calls the same
 on that `XMLFilter`.  So it gives you some flexibility to set up your `ContentHandler` later on, but you *must* remember to do so,
 and you have no guarantee that you won't be switching handlers around willy-nilly causing problems.
-    
+
+## License
+reactivesax is licensed under the Apache License, Version 2.0 (the "License"); you may not use this software except in compliance with the License.
+
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+
 ## FAQ
 
 These questions aren't frequently asked.  In fact, nobody has ever asked me a question about this project.  But these are
@@ -91,26 +96,4 @@ some questions that you might be having if you're reading this README.
   data from somewhere (a computation, or an event-driven input source, etc) will be writing that data out to the parser
   in order to pipe character input into a SAX pipeline.
   
-3. License?
 
-  *A*: Currently, I'm licensing this under [Creative Commons BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
-       
-   ![CC BY-SA 4.0 Badge](https://licensebuttons.net/l/by-sa/3.0/88x31.png)
-       
-   What this means (or, what I intend it to mean) is that you can use this library for whatever you want, and I will
-   be glad that you found it useful.  But, selfishly, if you improve the library, I want you to contribute back your
-   changes in the form of a pull request.  Also, if you use this library, and publish your modified version, I want
-   you to link back to the original and make it clear that you've modified it and what your changes are.  It's not
-   because I want any credit; it's just because I don't want anyone to get confused.
-       
-   CC has no license for this specifically, but I don't care about attribution if you just use this library in your
-   project (commercial or not).  You don't have to provide any attribution in that case, as far as I'm concerned.
-   But if you modify the library, I want your improvements.  Deal?
-       
-   I've also added a clause about how I'm not providing any warranty, and if anything bad happens it's not my
-   responsibility.  You can't be too careful these days.
-       
-4. Maven?
-
-  *A*: I don't have this published to maven right now.  If that's a thing that just anyone can do, I'm happy to do it.
-       I guess people publish things to Sonatype.  But I think you have to be special in someway to do that.
